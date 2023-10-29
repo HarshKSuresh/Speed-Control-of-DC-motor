@@ -1,0 +1,38 @@
+#define enA 9
+#define in1 6
+#define in2 7
+#define potPin A0  // Define the analog pin for the potentiometer
+
+void setup() {
+  pinMode(enA, OUTPUT);
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  // Set initial rotation direction
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, HIGH);
+  // Initialize serial communication for debugging
+  Serial.begin(9600);
+}
+
+void loop() {
+  int potValue = analogRead(potPin);  // Read potentiometer value
+  int pwmOutput = map(potValue, 0, 1023, 0, 255);  // Map the potentiometer value to PWM range
+  analogWrite(enA, pwmOutput);  // Send PWM signal to L298N Enable pin
+
+  // Condition to reverse direction when potentiometer value is greater than 500
+  if (potValue > 700) {
+    digitalWrite(in1, HIGH); // Reverse direction
+    digitalWrite(in2, LOW);
+  } else {
+    digitalWrite(in1, LOW); // Forward direction
+    digitalWrite(in2, HIGH);
+  }
+
+  // Debugging information
+  Serial.print("Potentiometer Value: ");
+  Serial.print(potValue);
+
+
+  delay(100); // Add a small delay to reduce serial output rate
+}
+
